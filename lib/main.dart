@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geolocator/geolocator.dart';
+
+
 
 void main() => runApp(MyApp());
 
@@ -16,6 +19,7 @@ class _MyAppState extends State<MyApp> {
   Set<Marker> markers = Set();
   MapType _currentMapType = MapType.normal;
   LatLng centerPosition;
+  String latlang= "", address = "";
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
@@ -31,17 +35,24 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _onAddMarkerButtonPressed() {
-    InfoWindow infoWindow =
-    InfoWindow(title: "Location" + markers.length.toString());
     Marker marker = Marker(
       markerId: MarkerId(markers.length.toString()),
-      infoWindow: infoWindow,
       position: centerPosition,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
     );
     setState(() {
-      markers.add(marker);
-     print("position  latitude: ${marker.position.latitude}, longitude : ${marker.position.longitude}");
+     latlang = "position  latitude: ${marker.position.latitude}, longitude : ${marker.position.longitude}";
+     _getAddress(marker);
+    });
+  }
+
+  void _getAddress(Marker marker) async{
+    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(marker.position.latitude, marker.position.longitude);
+    setState(() {
+      if(placemark[0].subLocality == '')
+        address="${placemark[0].thoroughfare} ${placemark[0].subThoroughfare},${placemark[0].locality},${placemark[0].subAdministrativeArea},${placemark[0].administrativeArea} ${placemark[0].postalCode},${placemark[0].country}";
+      else
+        address="${placemark[0].thoroughfare} ${placemark[0].subThoroughfare},${placemark[0].subLocality},${placemark[0].locality},${placemark[0].subAdministrativeArea},${placemark[0].administrativeArea} ${placemark[0].postalCode},${placemark[0].country}";
+
     });
   }
 
@@ -73,6 +84,7 @@ class _MyAppState extends State<MyApp> {
                 target: _center,
                 zoom: 11.0,
               ),
+              onCameraIdle: _onAddMarkerButtonPressed,
             ),
             Center(
               child: Icon(Icons.add_location, color: Colors.red, size: 30,),
@@ -90,17 +102,24 @@ class _MyAppState extends State<MyApp> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: new FloatingActionButton(
-                  onPressed: _onAddMarkerButtonPressed,
-                  child: new Icon(
-                    Icons.edit_location,
-                    color: Colors.white,
-                  ),
-                ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                color: Colors.blue,
+                height: 50,
+                width: 300,
+                margin: EdgeInsets.all(16),
+                child: Text('$latlang'),
+              ),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                color: Colors.blue,
+                height: 50,
+                width: 300,
+                margin: EdgeInsets.only(right: 16, left: 16, bottom: 100),
+                child: Text('$address'),
               ),
             ),
           ],
