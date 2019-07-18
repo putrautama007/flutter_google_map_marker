@@ -11,7 +11,8 @@ A few resources to get you started if this is your first Flutter project:
 - [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 - add your API KEY in android manifest and ios AppDelegate.swift
-- reference from https://www.developerlibs.com/2019/04/flutter-google-map-widget-plugin-example.html
+- reference from https://www.developerlibs.com/2019/04/flutter-google-map-widget-plugin-example.html 
+- and https://medium.com/flutter-community/building-places-location-search-with-map-view-using-flutter-1-0-alfian-losari-66cacb3bcc24
 
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,

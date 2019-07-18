@@ -2,8 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-
-
+import 'package:location/location.dart' as LocationManager;
 
 void main() => runApp(MyApp());
 
@@ -15,14 +14,32 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   Completer<GoogleMapController> _controller = Completer();
 
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  static const LatLng _center = const LatLng(-6.1753871, 106.8249641);
   Set<Marker> markers = Set();
   MapType _currentMapType = MapType.normal;
   LatLng centerPosition;
   String latlang= "", address = "";
 
-  void _onMapCreated(GoogleMapController controller) {
+  Future<LatLng> getUserLocation() async {
+    var currentLocation = <String, double>{};
+    final location = LocationManager.Location();
+    try {
+      currentLocation = await location.getLocation();
+      final lat = currentLocation["latitude"];
+      final lng = currentLocation["longitude"];
+      final center = LatLng(lat, lng);
+      return center;
+    } on Exception {
+      currentLocation = null;
+      return null;
+    }
+  }
+
+  void _onMapCreated(GoogleMapController controller) async{
+    final center = await getUserLocation();
     _controller.complete(controller);
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+        target: center, zoom: 12.0)));
   }
 
   void _onMapTypeButtonPressed() {
@@ -30,7 +47,6 @@ class _MyAppState extends State<MyApp> {
       _currentMapType = _currentMapType == MapType.normal
           ? MapType.satellite
           : MapType.normal;
-      print("dddd" + _currentMapType.toString());
     });
   }
 
@@ -78,11 +94,12 @@ class _MyAppState extends State<MyApp> {
               onMapCreated: _onMapCreated,
               mapType: _currentMapType,
               myLocationEnabled: true,
+              myLocationButtonEnabled: false,
               markers: markers,
               onCameraMove: _onCameraMove,
               initialCameraPosition: CameraPosition(
                 target: _center,
-                zoom: 11.0,
+                zoom: 7.0,
               ),
               onCameraIdle: _onAddMarkerButtonPressed,
             ),
@@ -92,7 +109,7 @@ class _MyAppState extends State<MyApp> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Align(
-                alignment: Alignment.bottomLeft,
+                alignment: Alignment.topLeft,
                 child: new FloatingActionButton(
                   onPressed: _onMapTypeButtonPressed,
                   child: new Icon(
