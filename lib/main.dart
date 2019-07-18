@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     final center = await getUserLocation();
     _controller.complete(controller);
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: center, zoom: 15.0)));
+        target: center, zoom: 18.0)));
   }
 
   void _onMapTypeButtonPressed() {
