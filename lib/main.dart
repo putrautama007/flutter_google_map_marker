@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:location/location.dart' as LocationManager;
+import 'package:geocoder/geocoder.dart';
 
 void main() => runApp(MyApp());
 
@@ -39,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     final center = await getUserLocation();
     _controller.complete(controller);
     controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-        target: center, zoom: 12.0)));
+        target: center, zoom: 15.0)));
   }
 
   void _onMapTypeButtonPressed() {
@@ -62,15 +62,12 @@ class _MyAppState extends State<MyApp> {
   }
 
   void _getAddress(Marker marker) async{
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(marker.position.latitude, marker.position.longitude);
-    setState(() {
-      if(placemark[0].subLocality == '')
-        address="${placemark[0].thoroughfare} ${placemark[0].subThoroughfare},${placemark[0].locality},${placemark[0].subAdministrativeArea},${placemark[0].administrativeArea} ${placemark[0].postalCode},${placemark[0].country}";
-      else
-        address="${placemark[0].thoroughfare} ${placemark[0].subThoroughfare},${placemark[0].subLocality},${placemark[0].locality},${placemark[0].subAdministrativeArea},${placemark[0].administrativeArea} ${placemark[0].postalCode},${placemark[0].country}";
-
+    final coordinates = await Geocoder.local.findAddressesFromCoordinates(Coordinates(marker.position.latitude, marker.position.longitude));
+     setState(() {
+      address = '${coordinates.first.addressLine}';
     });
   }
+
 
   @override
   Widget build(BuildContext context) {

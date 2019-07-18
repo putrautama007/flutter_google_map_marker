@@ -46,20 +46,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  geolocator:
+  geocoder:
     dependency: "direct main"
     description:
-      name: geolocator
+      name: geocoder
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.1.0"
-  google_api_availability:
-    dependency: transitive
-    description:
-      name: google_api_availability
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
+    version: "0.2.1"
   google_maps_flutter:
     dependency: "direct main"
     description:
@@ -74,13 +67,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.1"
-  location_permissions:
-    dependency: transitive
-    description:
-      name: location_permissions
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.2"
   matcher:
     dependency: transitive
     description:
